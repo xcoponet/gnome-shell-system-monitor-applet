@@ -2222,13 +2222,15 @@ const Gpu = class SystemMonitor_Gpu extends ElementBase {
         super({
             elt: 'gpu',
             item_name: _('GPU'),
-            color_name: ['used', 'memory']
+            color_name: ['used', 'memory', "power"]
         });
         this.max = 100;
 
         this.item_name = _('GPU');
         this.mem = 0;
         this.total = 0;
+        this.power = 0
+        this.powerlimit = 0
         this.tip_format();
         this.update();
     }
@@ -2283,6 +2285,9 @@ const Gpu = class SystemMonitor_Gpu extends ElementBase {
             this._update_unit();
         }
 
+        this.power = this._sanitizeUsageValue(usage[3])
+        this.powerlimit = this._sanitizeUsageValue(usage[4])
+
         if (this.useGiB) {
             this.mem = Math.round(memUsed / this._unitConversion);
             this.mem /= this._decimals;
@@ -2334,6 +2339,9 @@ const Gpu = class SystemMonitor_Gpu extends ElementBase {
             this.menu_items[3].text = this._pad(this.mem).toLocaleString(Locale) +
                 '/' + this._pad(this.total).toLocaleString(Locale);
         }
+
+        this.text_items[2].text = Math.round(this.power).toString();
+        this.tip_unit_labels[2].text = Math.round(this.power).toString() + "/" + Math.round(this.powerlimit).toString() + "W";
     }
     create_text_items() {
         return [
@@ -2344,7 +2352,15 @@ const Gpu = class SystemMonitor_Gpu extends ElementBase {
             new St.Label({
                 text: '%',
                 style_class: Style.get('sm-perc-label'),
-                y_align: Clutter.ActorAlign.CENTER})
+                y_align: Clutter.ActorAlign.CENTER}),
+            new St.Label({
+                text: '',
+                style_class: Style.get('sm-status-value'),
+                y_align: Clutter.ActorAlign.CENTER}),
+                new St.Label({
+                    text: 'W',
+                    style_class: Style.get('sm-perc-label'),
+                    y_align: Clutter.ActorAlign.CENTER}),
         ];
     }
     create_menu_items() {
@@ -2367,6 +2383,13 @@ const Gpu = class SystemMonitor_Gpu extends ElementBase {
                 style_class: Style.get('sm-value')}),
             new St.Label({
                 text: unit,
+                style_class: Style.get('sm-label')}),
+            // power
+            new St.Label({
+                text: '',
+                style_class: Style.get('sm-value')}),
+            new St.Label({
+                text: "W",
                 style_class: Style.get('sm-label')})
         ];
     }

@@ -409,6 +409,10 @@
       <default>'#00ff82'</default>
       <summary>Color of program GPU memory in the chart</summary>
     </key>
+    <key name="gpu-power-color" type="s">
+      <default>'#ffd700'</default>
+      <summary>Color of program GPU power in the chart</summary>
+    </key>
     <key name="thermal-tz0-color" type="s">
       <default>'#f2002e'</default>
       <summary>Color of user thermal in the chart</summary>
